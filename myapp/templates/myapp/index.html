@@ -1,0 +1,113 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+<body>
+
+<div class="row">
+    <div class="col-md-12">
+        <nav class="navbar navbar-dark bg-info">
+            <span class="navbar-brand">Monsoon Tracker</span>
+            <a href="" class="navbar-brand">Refresh Colors</a>
+            <a href="/" class="navbar-brand">Home</a>
+        </nav>
+    </div>
+</div>
+
+<br>
+
+<div class="row">
+    <div class="column" style="margin:30px">
+
+      <canvas id="myChart" width="550" height="450"></canvas>
+      
+    </div>
+
+    <div class="column" style="margin:30px">
+
+      <canvas id="myChart2" width="550" height="450"></canvas>
+      
+    </div>
+  </div>
+  
+</body>
+<script>
+
+var data_from_django = JSON.parse ("{{data | escapejs}}");
+var data_set_names = JSON.parse ("{{data_set_names | escapejs}}");
+
+console.log(data_set_names)
+
+const ctx2 = document.getElementById('myChart2');
+const ctx = document.getElementById('myChart');
+
+data_labels = Object.keys(data_from_django[0])
+
+var data_dict_array = [];
+for (var i = 0; i < data_from_django.length; i++) {
+    data_set = Object.values(data_from_django[i])
+    data_set_color = getRandomColor()
+    data_dict_array.push({
+            label: String(data_set_names[i]),
+            data: data_set,
+            backgroundColor: hexToRgbA(data_set_color, 0.1),
+            borderColor: hexToRgbA(data_set_color, 1),
+            borderWidth: 1
+        });        
+}
+
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: data_labels,
+        datasets: data_dict_array
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Chart2 Starts here
+const myChart2 = new Chart(ctx2, {
+    type: 'line',
+    data: {
+        labels: data_labels,
+        datasets: data_dict_array
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+function hexToRgbA(hex, transp){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+transp+')';
+    }
+    throw new Error('Bad Hex');
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+</script>

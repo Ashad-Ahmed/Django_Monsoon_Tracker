@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Monsoon Tracker</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Style the header */
+header {
+  background-color: #666;
+  padding: 25px;
+  text-align: center;
+  font-size: 30px;
+  color: white;
+}
+
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 30%;
+  height: 400px; /* only for demonstration, should be removed */
+  background: #ccc;
+  padding: 20px;
+}
+
+/* Style the list inside the menu */
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1c5;
+  height: 400px; /* only for demonstration, should be removed */
+}
+
+loggedout {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #d7adadc5;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+/* Clear floats after the columns */
+section::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the footer */
+footer {
+  background-color: #b8ababc5;
+  padding: 10px;
+  text-align: center;
+  color: white;
+}
+
+/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+@media (max-width: 600px) {
+  nav, article {
+    width: 100%;
+    height: auto;
+  }
+}
+</style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</head>
+
+<body>
+
+  {% extends 'base.html' %}
+
+  {% block title %}Home{% endblock %}
+
+  {% block content %}
+  {% if user.is_authenticated %}
+
+<header>
+  <h2>Hi {{ user.username }}! Welcome to our Monsoon Tracker</h2>
+</header>
+
+<section>
+  <nav>
+    <h5>Follow below links to explore the Tracker!</h5>
+    <br>
+    <ul>
+      <li><h6><a href="{% url 'djangodb' %}">Historical Databases</a></h6></li>
+      <br>
+      <li><h6><a href="{% url 'otherdb' %}">Live Monsoon Tracker</a></h6></li>
+    </ul>
+  </nav>
+  
+  <article>
+    <h1>Monsoon in India!</h1>
+    <br>
+    <p>Monsoon or rainy season, lasting from June to September. The season is dominated by the humid southwest summer monsoon, which slowly sweeps across the country beginning in late May or early June.</p>
+    <p>Monsoon rains begin to recede from North India at the beginning of October. South India typically receives more rainfall.</p>
+    <p>This Project demonstrats the use of Django traditional Databases (Sqlite3 in our case) and Other Data Sources (An Excel File in our case) to track average rainfall in India categorized into four regions North India, East India, West India and South India.</p>
+    <p>We use Sqlite Database to store Historicat Data and an Excel File to keep live data (Current year). Try using Google Sheets, SharePoint or other list tools can be used as well.</p>
+  </article>
+</section>
+
+<footer>
+  <a href="{% url 'logout' %}" class="navbar-brand">Log Out</a>
+  <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+</footer>
+
+{% else %}
+
+<loggedout>
+<h1>It's Monsoon in India!</h1>
+<h4">Oops, you're not logged-in, log-in to enjoy the Monsoon with us.</h4>
+<br><br>
+<h2><a href="{% url 'login' %}">Click here</a></h2>
+</loggedout>
+
+{% endif %}
+{% endblock %}
+</body>>
+</html>
